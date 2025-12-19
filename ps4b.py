@@ -15,7 +15,7 @@ class Message(object):
         a Message object has one attribute:
             the message text
         '''
-        raise NotImplementedError  # delete this line and replace with your code here
+        self.message = input_text
 
     def __repr__(self):
         '''
@@ -32,7 +32,7 @@ class Message(object):
 
         Returns: (string) the message text
         '''
-        raise NotImplementedError  # delete this line and replace with your code here
+        return self.message
 
     def shift_char(self, char, shift):
         '''
@@ -44,7 +44,17 @@ class Message(object):
 
         Returns: (string) the shifted character with ASCII value in the range [32, 126]
         '''
-        raise NotImplementedError  # delete this line and replace with your code here
+        num = ord(char)
+        val = num + shift 
+        #Overflow Case
+        if(val > 126):
+            return self.shift_char(chr(val % 126), 32 - 1)
+        #Underflow Case
+        elif(val < 32):
+            return self.shift_char(chr(127),ord(char) - 32 + shift)
+        else:
+            return chr(val)
+            
 
     def apply_pad(self, pad):
         '''
@@ -57,7 +67,11 @@ class Message(object):
 
         Returns: (string) The ciphertext produced using the one time pad
         '''
-        raise NotImplementedError  # delete this line and replace with your code here
+        message = self.get_text()
+        ciphertext = ""
+        for idx, val in enumerate(pad):
+            ciphertext += self.shift_char(message[idx], val)
+        return ciphertext
 
 
 class PlaintextMessage(Message):
@@ -75,7 +89,12 @@ class PlaintextMessage(Message):
                 or generated randomly using self.generate_pad() if pad is None)
             the ciphertext (string, input_text encrypted using the pad)
         '''
-        raise NotImplementedError  # delete this line and replace with your code here
+        super().__init__(input_text)
+        
+        if(pad is not None):
+            self.pad = pad[:]
+        
+        
 
     def __repr__(self):
         '''
@@ -96,7 +115,13 @@ class PlaintextMessage(Message):
 
         Returns: (list of integers) the new one time pad
         '''
-        raise NotImplementedError  # delete this line and replace with your code here
+        message = self.get_text()
+        pad = []
+        for i in range(len(message)):
+            num = random.randint(0, 109)
+            pad.append(num)
+        return pad
+            
 
     def get_pad(self):
         '''
@@ -104,7 +129,7 @@ class PlaintextMessage(Message):
 
         Returns: (list of integers) a COPY of your pad
         '''
-        raise NotImplementedError  # delete this line and replace with your code here
+        return self.pad[:]
 
     def get_ciphertext(self):
         '''
@@ -112,7 +137,10 @@ class PlaintextMessage(Message):
 
         Returns: (string) the ciphertext
         '''
-        raise NotImplementedError  # delete this line and replace with your code here
+        pad = self.get_pad()
+        ciphertext = self.apply_pad(pad)
+        return ciphertext
+        
 
     def change_pad(self, new_pad):
         '''
@@ -124,7 +152,7 @@ class PlaintextMessage(Message):
 
         Returns: nothing
         '''
-        raise NotImplementedError  # delete this line and replace with your code here
+        self.pad = new_pad
 
 
 class EncryptedMessage(Message):
@@ -158,3 +186,32 @@ class EncryptedMessage(Message):
         Returns: (PlaintextMessage) the decrypted message (containing the pad)
         '''
         raise NotImplementedError  # delete this line and replace with your code here
+# def shift_char(char, shift):
+#      '''
+#      Used to shift a character as described in the pset handout
+
+#      char (string): the single character to shift.
+#                  ASCII value in the range: 32<=ord(char)<=126
+#      shift (int): the amount to shift char by
+
+#      Returns: (string) the shifted character with ASCII value in the range [32, 126]
+#      '''
+#      num = ord(char)
+#      print(f"This is the original map {num}")
+#      val = num + shift 
+#      print(val)
+#      #Overflow Case
+#      if(val > 126):
+#          return shift_char(chr(val % 126), 32 - 1)
+#      #Underflow Case
+#      elif(val < 32):
+#          return shift_char(chr(127),ord(char) - 32 + shift)
+#      else:
+#          return chr(val)
+         
+     
+# shifts = [('A', 5, 'F'), ('a', 10, 'k'), (' ', -1, '~'),
+#           ('-', 8, '5'), ('}', 99, '"'), ('k', -3, 'h'), ('Y', -107, 'M')]
+# print(shift_char('Y', -107))
+# print(shift_char(' ', - 1))
+
