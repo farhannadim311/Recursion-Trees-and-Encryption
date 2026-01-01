@@ -48,9 +48,11 @@ print(f"Is Max Heap: {is_valid}")
 ```
 
 ### Encrypting a message
+```python
 pad = load_pad("pads.txt")
 msg = PlaintextMessage("Hello World", pad)
 encrypted_msg = msg.get_encrypted_message()
 
 print(f"Original: {msg.get_text()}")
 print(f"Encrypted: {encrypted_msg.get_text()}")
+```
