@@ -93,6 +93,9 @@ class PlaintextMessage(Message):
         
         if(pad is not None):
             self.pad = pad[:]
+        else:
+            self.pad = self.generate_pad()
+            
         
         
 
@@ -130,7 +133,6 @@ class PlaintextMessage(Message):
         Returns: (list of integers) a COPY of your pad
         '''
         return self.pad[:]
-
     def get_ciphertext(self):
         '''
         Used to access the ciphertext produced by applying pad to the message text
@@ -165,7 +167,7 @@ class EncryptedMessage(Message):
         an EncryptedMessage object inherits from Message. It has one attribute:
             the message text (ciphertext)
         '''
-        raise NotImplementedError  # delete this line and replace with your code here
+        super().__init__(input_text)
 
     def __repr__(self):
         '''
@@ -185,33 +187,13 @@ class EncryptedMessage(Message):
 
         Returns: (PlaintextMessage) the decrypted message (containing the pad)
         '''
-        raise NotImplementedError  # delete this line and replace with your code here
-# def shift_char(char, shift):
-#      '''
-#      Used to shift a character as described in the pset handout
-
-#      char (string): the single character to shift.
-#                  ASCII value in the range: 32<=ord(char)<=126
-#      shift (int): the amount to shift char by
-
-#      Returns: (string) the shifted character with ASCII value in the range [32, 126]
-#      '''
-#      num = ord(char)
-#      print(f"This is the original map {num}")
-#      val = num + shift 
-#      print(val)
-#      #Overflow Case
-#      if(val > 126):
-#          return shift_char(chr(val % 126), 32 - 1)
-#      #Underflow Case
-#      elif(val < 32):
-#          return shift_char(chr(127),ord(char) - 32 + shift)
-#      else:
-#          return chr(val)
-         
-     
-# shifts = [('A', 5, 'F'), ('a', 10, 'k'), (' ', -1, '~'),
-#           ('-', 8, '5'), ('}', 99, '"'), ('k', -3, 'h'), ('Y', -107, 'M')]
-# print(shift_char('Y', -107))
-# print(shift_char(' ', - 1))
-
+        newPad = []
+        for i in range(len(pad)):
+            newPad.append(-pad[i])
+            
+        msg = self.apply_pad(newPad)
+        return PlaintextMessage(msg)
+# pad = [2,4,5]
+# txt = 'I am a boy'
+# m = PlaintextMessage(txt)
+# print(m.get_pad())
